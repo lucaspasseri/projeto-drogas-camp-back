@@ -28,9 +28,7 @@ app.post("/sign-in", async (req, res)=> {
         
         const user = query.rows[0];
 
-        const hashedPassword = bcrypt.hashSync(password, 10);
-
-        if( user && bcrypt.compare(password, hashedPassword)){
+        if( user && bcrypt.compareSync(password, user.password)){
             const token = uuid();
             
             await connection.query(
