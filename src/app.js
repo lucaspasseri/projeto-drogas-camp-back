@@ -83,5 +83,3 @@ app.post('/sign-up', async (req,res) =>{
 })
 
 export default app;
-
-export default app;
