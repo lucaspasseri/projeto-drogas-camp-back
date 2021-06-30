@@ -7,7 +7,7 @@ const databaseConfig = {
     password: '123456',
     host: 'localhost',
     port: 5432,
-    database: 'drogas_camp'
+    database: process.env.NODE_ENV === 'test' ? 'drogas_camp_test' : 'drogas_camp'
 }
 
 const connection = new Pool(databaseConfig);
