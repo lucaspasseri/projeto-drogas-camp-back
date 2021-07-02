@@ -5,8 +5,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "PORT=4000 NODE_ENV=test npx jest -i",
-    "start": "PORT=4000 npx nodemon ./src/server.js"
+    "test": "NODE_ENV=test npx jest -i",
+    "start": "npx nodemon ./src/server.js"
   },
   "keywords": [],
   "author": "",

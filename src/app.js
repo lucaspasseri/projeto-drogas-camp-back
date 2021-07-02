@@ -117,7 +117,7 @@ app.post('/sales', async (req,res) => {
     const { products, totals } = req.body
     const total = totals*100
     const orderDate = new Date;
-    console.log(products)
+
     const order = products.map( product => {
         return {
             productId: product.productId,
