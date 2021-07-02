@@ -89,7 +89,6 @@ app.post('/sign-up', async (req,res) =>{
     if(validationErrors) return res.sendStatus(400);
 
     const {name, email, password} = req.body;
-    const createdDate = new Date;
 
     try {
         const checkEmail = await connection.query(`
@@ -102,8 +101,8 @@ app.post('/sign-up', async (req,res) =>{
         const hashedPassword = bcrypt.hashSync(password,10)
 
         await connection.query(`
-            INSERT INTO users (name, email, password, created_at)
-            VALUES ($1, $2, $3, $4)`,[name, email, hashedPassword, createdDate])
+            INSERT INTO users (name, email, password)
+            VALUES ($1, $2, $3)`,[name, email, hashedPassword])
 
         res.sendStatus(201)
 
