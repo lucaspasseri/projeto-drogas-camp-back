@@ -12,9 +12,40 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-app.post("/sign-in", async (req, res)=> {
+app.get("/products/:query", async(req, res) => {
+    try {
+        const { query } = req.params;
+
+        let result = await connection.query(
+            `SELECT * FROM products
+            WHERE products.name ILIKE $1`,[query+'%']
+        );
+
+        res.send(result.rows);
+    } catch(e) {
+        console.log(e);
+        res.sendStatus(500);
+    }
+});
+
+app.get("/products", async (req, res) => {
     try {
 
+        const result = await connection.query("SELECT * FROM products");
+
+        const products = result.rows;
+
+        res.send(products);
+
+    } catch(e) {
+        console.log(e);
+        res.sendStatus(500);
+    }
+});
+
+app.post("/sign-in", async (req, res)=> {
+    try {
+        
         const validationErrors = signInSchema.validate(req.body).error;
 
         if(validationErrors) return res.sendStatus(400);
@@ -58,7 +89,6 @@ app.post('/sign-up', async (req,res) =>{
     if(validationErrors) return res.sendStatus(400);
 
     const {name, email, password} = req.body;
-    const createdDate = new Date;
 
     try {
         const checkEmail = await connection.query(`
@@ -71,12 +101,45 @@ app.post('/sign-up', async (req,res) =>{
         const hashedPassword = bcrypt.hashSync(password,10)
 
         await connection.query(`
-            INSERT INTO users (name, email, password, created_at)
-            VALUES ($1, $2, $3, $4)`,[name, email, hashedPassword, createdDate])
+            INSERT INTO users (name, email, password)
+            VALUES ($1, $2, $3)`,[name, email, hashedPassword])
 
         res.sendStatus(201)
 
     } catch (error) {
+        console.log(error)
+        res.sendStatus(500)
+    }
+})
+
+app.post('/sales', async (req,res) => {
+    const { products, totals } = req.body
+    const total = totals*100
+    const orderDate = new Date;
+
+    const order = products.map( product => {
+        return {
+            productId: product.productId,
+            name: product.name,
+            unitPrice: product.price,
+            quantitySold: product.quantity
+        } 
+    })
+
+    try{
+        await order.forEach( product => {
+            connection.query(`
+            UPDATE products SET "inStock" = "inStock" - $1
+            WHERE id = $2`,[product.quantitySold,product.productId])
+        })
+
+        const result = await connection.query(`
+            INSERT INTO sales ("orderSummary", "orderTotal", created_at)
+            VALUES ($1, $2, $3)`,[order, total ,orderDate])
+
+        res.sendStatus(200)
+        
+    } catch (error){
         console.log(error)
         res.sendStatus(500)
     }
