@@ -5,8 +5,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "NODE_ENV=test npx jest -i",
-    "start": "npx nodemon ./src/server.js"
+    "test": "PORT=4000 NODE_ENV=test npx jest -i",
+    "start": "PORT=4000 npx nodemon ./src/server.js"
   },
   "keywords": [],
   "author": "",
@@ -15,6 +15,7 @@
     "@sendgrid/mail": "^7.4.5",
     "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "joi": "^17.4.0",
     "pg": "^8.6.0",
