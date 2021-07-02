@@ -113,4 +113,37 @@ app.post('/sign-up', async (req,res) =>{
     }
 })
 
+app.post('/sales', async (req,res) => {
+    const { products, totals } = req.body
+    const total = totals*100
+    const orderDate = new Date;
+
+    const order = products.map( product => {
+        return {
+            productId: product.productId,
+            name: product.name,
+            unitPrice: product.price,
+            quantitySold: product.quantity
+        } 
+    })
+
+    try{
+        await order.forEach( product => {
+            connection.query(`
+            UPDATE products SET "inStock" = "inStock" - $1
+            WHERE id = $2`,[product.quantitySold,product.productId])
+        })
+
+        const result = await connection.query(`
+            INSERT INTO sales ("orderSummary", "orderTotal", created_at)
+            VALUES ($1, $2, $3)`,[order, total ,orderDate])
+
+        res.sendStatus(200)
+        
+    } catch (error){
+        console.log(error)
+        res.sendStatus(500)
+    }
+})
+
 export default app;
