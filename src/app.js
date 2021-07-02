@@ -113,27 +113,11 @@ app.post('/sign-up', async (req,res) =>{
     }
 })
 
-app.post('/products/:id/:param', async (req,res) =>{
-    const {id, param} = req.params
-    if(param === 'add'){
-        await connection.query(`
-            UPDATE products
-            SET "inStock" = "inStock" - 1
-            WHERE id = $1`,[id])
-            res.send({add:'add'})
-    } else if (param === 'remove'){
-        await connection.query(`
-            UPDATE products
-            SET "inStock" = "inStock" + 1
-            WHERE id = $1`,[id])
-            res.send({remove:'remove'})
-    }
-})
-
 app.post('/sales', async (req,res) => {
     const { products, totals } = req.body
     const total = totals*100
     const orderDate = new Date;
+    console.log(products)
     const order = products.map( product => {
         return {
             productId: product.productId,
@@ -154,7 +138,7 @@ app.post('/sales', async (req,res) => {
             INSERT INTO sales ("orderSummary", "orderTotal", created_at)
             VALUES ($1, $2, $3)`,[order, total ,orderDate])
 
-        res.sendStatus(201)
+        res.sendStatus(200)
         
     } catch (error){
         console.log(error)

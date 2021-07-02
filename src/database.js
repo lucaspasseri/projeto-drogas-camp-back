@@ -7,7 +7,7 @@ const databaseConfig = {
 	user: process.env.DB_USER,
 	password: process.env.DB_PASSWORD,
 	port: process.env.DB_PORT,
-	database: process.env.DB_DATABASE
+	database: process.env.NODE_ENV === 'test' ? 'drogas_camp_test' : 'drogas_camp'
 }
 
 const connection = new Pool(databaseConfig);
