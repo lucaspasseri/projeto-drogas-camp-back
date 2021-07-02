@@ -5,8 +5,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "NODE_ENV=test npx jest -i",
-    "start": "npx nodemon ./src/server.js"
+    "test": "npx jest -i",
+    "start": "node ./src/server.js"
   },
   "keywords": [],
   "author": "",
