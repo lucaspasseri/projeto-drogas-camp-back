@@ -3,9 +3,6 @@ import supertest from "supertest";
 import connection from "../src/database.js";
 import app from "../src/app.js";
 
-beforeEach( async () => {
-    
-})
     
 afterAll( () => {
     connection.end();
