@@ -12,9 +12,40 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-app.post("/sign-in", async (req, res)=> {
+app.get("/products/:query", async(req, res) => {
+    try {
+        const { query } = req.params;
+
+        let result = await connection.query(
+            `SELECT * FROM products
+            WHERE products.name ILIKE $1`,[query+'%']
+        );
+
+        res.send(result.rows);
+    } catch(e) {
+        console.log(e);
+        res.sendStatus(500);
+    }
+});
+
+app.get("/products", async (req, res) => {
     try {
 
+        const result = await connection.query("SELECT * FROM products");
+
+        const products = result.rows;
+
+        res.send(products);
+
+    } catch(e) {
+        console.log(e);
+        res.sendStatus(500);
+    }
+});
+
+app.post("/sign-in", async (req, res)=> {
+    try {
+        
         const validationErrors = signInSchema.validate(req.body).error;
 
         if(validationErrors) return res.sendStatus(400);
