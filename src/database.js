@@ -1,4 +1,4 @@
-import pg from 'pg';
+/* import pg from 'pg';
 
 const {Pool} = pg;
 
@@ -8,6 +8,21 @@ const databaseConfig = {
     host: 'localhost',
     port: 5432,
     database: process.env.NODE_ENV === 'test' ? 'drogas_camp_test' : 'drogas_camp'
+}
+
+const connection = new Pool(databaseConfig);
+
+export default connection; */
+
+import pg from 'pg';
+
+const { Pool } = pg;
+
+const databaseConfig = {
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
+        rejectUnauthorized: false
+    }
 }
 
 const connection = new Pool(databaseConfig);
